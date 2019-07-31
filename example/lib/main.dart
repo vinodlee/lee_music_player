@@ -1,61 +1,178 @@
-import 'package:lee_music_player_example/directory_screen.dart';
-import 'package:lee_music_player_example/example_animation_player.dart';
-import 'package:lee_music_player_example/example_framing.dart';
-import 'package:lee_music_player_example/example_layout_overlay.dart';
-import 'package:lee_music_player_example/example_radial_drag.dart';
+import 'package:lee_music_player_example/audio_samples.dart';
+import 'package:lee_music_player_example/declarative_button_list_components.dart';
+import 'package:lee_music_player_example/declarative_button_list_whole_state.dart';
+import 'package:lee_music_player_example/declarative_playlist_components.dart';
+import 'package:lee_music_player_example/imperative_button_list.dart';
 import 'package:flutter/material.dart';
+import 'package:lee_music_player_example/screen_welcome.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+	
+	runApp(new MyApp());
+}
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+	@override
+	_MyAppState createState() => new _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+	int _activeTabIndex = 0;
+	Widget Function() _builder;
+	
+	@override
+	void initState() {
+		super.initState();
+		_builder = _buildWelcomeScreen;
+	}
+	
+	Widget _buildWelcomeScreen() {
+		return new WelcomeScreen();
+	}
+	
+	Widget _buildA() {
+		return new ImperativeButtonListScreen(
+			audioUrl: audioUrls[audioUrls.length - 1],
+		);
+	}
+	
+	Widget _buildB() {
+		return new DeclarativeButtonListWholeStateScreen(
+			audioUrl: audioUrls[audioUrls.length - 1],
+		);
+	}
+	
+	Widget _buildC() {
+		return new DeclarativeButtonListComponentsScreen(
+			audioUrl: audioUrls[audioUrls.length - 1],
+		);
+	}
+
+//    return new DeclarativeAudioSimpleExample(
+//      audioUrl: STREAM_URL,
+//    );
+
+//    return new Audio(
+////            audioUrl: 'https://api.soundcloud.com/tracks/405630381/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P',
+//      audioUrl: 'https://api.soundcloud.com/tracks/9540352/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P',
+//      playbackState: PlaybackState.playing,
+//      buildMe: [
+//        WatchableAudioProperties.audioPlayerState,
+//      ],
+//      playerBuilder: (BuildContext context, AudioPlayer player, Widget child) {
+//        IconData icon = Icons.music_note;
+//        if (player.state == AudioPlayerState.playing) {
+//          icon = Icons.pause;
+//        } else if (player.state == AudioPlayerState.paused) {
+//          icon = Icons.play_arrow;
+//        }
+//
+//        Function onPressed;
+//        if (player.state == AudioPlayerState.playing) {
+//          onPressed = player.pause;
+//        } else if (player.state == AudioPlayerState.paused) {
+//          onPressed = player.play;
+//        }
+//
+//        return new IconButton(
+//          icon: new Icon(
+//            icon,
+//            size: 35.0,
+//          ),
+//          color: Colors.white,
+//          onPressed: onPressed,
+//        );
+//      },
+//    );
+	
+	Widget _buildD() {
+		return new DeclarativePlaylistComponentsScreen(
+			playlist: audioUrls,
+		);
+	}
+	
 	@override
 	Widget build(BuildContext context) {
 		return new MaterialApp(
-			title: 'Fluttery Example',
-			theme: new ThemeData(
-				primarySwatch: Colors.blue,
+			theme: new ThemeData.dark(),
+			home: new Scaffold(
+				appBar: new AppBar(
+					title: new Text('Fluttery Audio'),
+				),
+				body: new Center(
+					child: _builder(),
+				),
+				bottomNavigationBar: new BottomNavigationBar(
+					currentIndex: _activeTabIndex,
+					type: BottomNavigationBarType.fixed,
+					items: [
+						new BottomNavigationBarItem(
+							icon: new Icon(
+								Icons.home,
+							),
+							title: new Text('Welcome'),
+						),
+						new BottomNavigationBarItem(
+							icon: new Icon(
+								Icons.music_note,
+							),
+							title: new Text('A'),
+						),
+						new BottomNavigationBarItem(
+							icon: new Icon(
+								Icons.music_note,
+							),
+							title: new Text('B'),
+						),
+						new BottomNavigationBarItem(
+							icon: new Icon(
+								Icons.music_note,
+							),
+							title: new Text('C'),
+						),
+						new BottomNavigationBarItem(
+							icon: new Icon(
+								Icons.music_note,
+							),
+							title: new Text('D'),
+						),
+					],
+					onTap: (int index) {
+						switch (index) {
+							case 0:
+								setState(() {
+									_activeTabIndex = 0;
+									_builder = _buildWelcomeScreen;
+								});
+								break;
+							case 1:
+								setState(() {
+									_activeTabIndex = 1;
+									_builder = _buildA;
+								});
+								break;
+							case 2:
+								setState(() {
+									_activeTabIndex = 2;
+									_builder = _buildB;
+								});
+								break;
+							case 3:
+								setState(() {
+									_activeTabIndex = 3;
+									_builder = _buildC;
+								});
+								break;
+							case 4:
+								setState(() {
+									_activeTabIndex = 4;
+									_builder = _buildD;
+								});
+								break;
+						}
+					},
+				),
 			),
-			routes: {
-				'/': (context) => new Page(
-					child: new DirectoryScreen(),
-				),
-				'/randomColorBlock': (context) => new Page(
-					child: new RandomColorBlockExampleScreen(),
-				),
-				'/layoutOverlay': (context) => new Page(
-					child: new LayoutOverlayExampleScreen(),
-				),
-				'/radialDrag': (context) => new Page(
-					child: new RadialDragExampleScreen(),
-				),
-				'/animationPlayer': (context) => new Page(
-					child: new AnimationPlayerExampleScreen(),
-				),
-			},
-		);
-	}
-}
-
-class Page extends StatefulWidget {
-	
-	final child;
-	
-	Page({
-		this.child,
-	});
-	
-	@override
-	_PageState createState() => new _PageState();
-}
-
-class _PageState extends State<Page> {
-	@override
-	Widget build(BuildContext context) {
-		return new Scaffold(
-			appBar: new AppBar(
-				title: new Text('Fluttery'),
-			),
-			body: widget.child,
 		);
 	}
 }

@@ -1,8 +1,8 @@
 name: lee_music_player
 description: A new flutter plugin project.
 version: 0.0.1
-author:
-homepage:
+author: vinodlee<vinodhleee@gmail.com>
+homepage: https://github.com/vinodlee/lee_music_player
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
